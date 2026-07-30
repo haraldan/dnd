@@ -1,6 +1,10 @@
-*.pdf
+.git/
+.github/
+.venv/
 config/
+tests/
+docs/
+*.pdf
 __pycache__/
 *.pyc
 .pytest_cache/
-.venv/

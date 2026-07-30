@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Spellbook Header Inserter</title>
+  <link rel="stylesheet" href="/static/app.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>Spellbook Header Inserter</h1>
+    <span id="save-state" class="save-state"></span>
+  </header>
+
+  <main class="layout">
+    <!-- LEFT: controls -->
+    <section class="controls">
+      <div class="card">
+        <h2>1 · Upload PDFs</h2>
+        <label class="filebtn">
+          Header file
+          <input type="file" id="header-file" accept="application/pdf" />
+          <span id="header-info" class="hint"></span>
+        </label>
+        <label class="filebtn">
+          Spells file
+          <input type="file" id="spells-file" accept="application/pdf" />
+          <span id="spells-info" class="hint"></span>
+        </label>
+      </div>
+
+      <div class="card">
+        <h2>2 · Header page</h2>
+        <label class="row">
+          Page (1-based)
+          <input type="number" id="header-page" min="1" step="1" value="1" />
+        </label>
+        <p class="hint">Pick the page the two banners are clipped from.</p>
+      </div>
+
+      <div class="card">
+        <h2>3 · Tune bands</h2>
+        <p class="hint">Drag the coloured bands on the page, or edit the numbers
+          (PDF points from the top).</p>
+
+        <fieldset class="band band-slots">
+          <legend>Spell-slots band</legend>
+          <label class="row">top <input type="number" id="slots_y0" step="1" /></label>
+          <label class="row">bottom <input type="number" id="slots_y1" step="1" /></label>
+        </fieldset>
+
+        <fieldset class="band band-mods">
+          <legend>Modifiers band</legend>
+          <label class="row">top <input type="number" id="modifiers_y0" step="1" /></label>
+          <label class="row">bottom <input type="number" id="modifiers_y1" step="1" /></label>
+        </fieldset>
+
+        <label class="row check">
+          <input type="checkbox" id="include_slots_on_first" />
+          Include slots band on the first page
+        </label>
+        <label class="row">
+          Push overlap (pts)
+          <input type="number" id="push_overlap" step="1" />
+        </label>
+        <label class="row">
+          Render DPI
+          <input type="number" id="render_dpi" min="72" max="1200" step="1" />
+        </label>
+      </div>
+
+      <div class="card actions">
+        <button id="preview-btn" class="primary">Preview</button>
+        <button id="download-btn">Download</button>
+        <span id="render-error" class="error"></span>
+      </div>
+    </section>
+
+    <!-- MIDDLE: header page tuner -->
+    <section class="tuner">
+      <h2>Header page</h2>
+      <div id="tuner-stage" class="stage">
+        <img id="header-img" alt="header page" />
+        <div id="rect-slots" class="rect rect-slots" data-band="slots">
+          <span class="handle handle-top"></span>
+          <span class="handle handle-bottom"></span>
+          <span class="rect-label">slots</span>
+        </div>
+        <div id="rect-mods" class="rect rect-mods" data-band="modifiers">
+          <span class="handle handle-top"></span>
+          <span class="handle handle-bottom"></span>
+          <span class="rect-label">modifiers</span>
+        </div>
+        <p id="tuner-empty" class="empty">Upload a header PDF to begin.</p>
+      </div>
+    </section>
+
+    <!-- RIGHT: output preview -->
+    <section class="preview">
+      <h2>Output preview</h2>
+      <iframe id="preview-frame" title="output preview"></iframe>
+      <p class="empty" id="preview-empty">Upload both PDFs and click Preview.</p>
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

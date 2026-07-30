@@ -1,0 +1,15 @@
+services:
+  spellhdr:
+    # Build locally, or comment this out and use the published image instead:
+    build: .
+    # image: ghcr.io/OWNER/REPO:latest
+    user: "1000:1000"          # must own ./config
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./config:/config       # persistent, host-mountable settings (config.yaml)
+    environment:
+      - SPELLHDR_CONFIG_PATH=/config/config.yaml
+      # - SPELLHDR_UPLOAD_TTL=3600      # seconds before transient uploads are swept
+      # - SPELLHDR_SECRET_KEY=change-me # stable session cookie signing key
+    restart: unless-stopped

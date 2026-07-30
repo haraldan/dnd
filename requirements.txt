@@ -1,0 +1,4 @@
+flask
+pymupdf
+pyyaml
+gunicorn
