@@ -3,8 +3,9 @@
 // Config field ids that map 1:1 to the persisted Config dataclass.
 const NUM_FIELDS = [
   "slots_y0", "slots_y1", "modifiers_y0", "modifiers_y1",
-  "push_overlap", "render_dpi",
+  "modifiers_top_gap", "push_offset", "render_dpi",
 ];
+const BOOL_FIELDS = ["include_slots_on_first", "include_modifiers_on_rest"];
 const BAND_FIELDS = {
   slots: { y0: "slots_y0", y1: "slots_y1", rect: "rect-slots" },
   modifiers: { y0: "modifiers_y0", y1: "modifiers_y1", rect: "rect-mods" },
@@ -29,13 +30,13 @@ async function loadConfig() {
 function applyConfigToInputs() {
   const c = state.config;
   NUM_FIELDS.forEach((f) => { el(f).value = c[f]; });
-  el("include_slots_on_first").checked = !!c.include_slots_on_first;
+  BOOL_FIELDS.forEach((f) => { el(f).checked = !!c[f]; });
 }
 
 function readInputsToConfig() {
   const c = state.config;
   NUM_FIELDS.forEach((f) => { c[f] = parseFloat(el(f).value); });
-  c.include_slots_on_first = el("include_slots_on_first").checked;
+  BOOL_FIELDS.forEach((f) => { c[f] = el(f).checked; });
   c.header_page_index = Math.max(0, (parseInt(el("header-page").value, 10) || 1) - 1);
   return c;
 }
@@ -224,7 +225,7 @@ NUM_FIELDS.forEach((f) => el(f).addEventListener("input", () => {
   scheduleSave();
   positionRects();
 }));
-el("include_slots_on_first").addEventListener("change", scheduleSave);
+BOOL_FIELDS.forEach((f) => el(f).addEventListener("change", scheduleSave));
 el("header-page").addEventListener("change", async () => {
   scheduleSave();
   await refreshHeaderImage();

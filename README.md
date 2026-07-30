@@ -6,10 +6,12 @@ file**, pick which header page the banners come from, visually tune the vertical
 range of two bands — a **spell-slots** band and a **modifiers** band — then preview
 and download the merged PDF.
 
-- The **modifiers** band is placed on **every** page.
+- The **modifiers** band is placed on the **first** page, and on **pages 2+** when
+  that toggle is on.
 - The **spell-slots** band is placed only on the **first** page (toggleable), sitting
   above the modifiers band.
-- Original spell content is pushed down by *(total band height) − push overlap*.
+- On pages 2+, a tunable **top gap** adds whitespace above the modifiers band.
+- Original spell content is pushed straight down by the **push offset** (points).
 
 Built with Flask + [PyMuPDF](https://pymupdf.readthedocs.io/). Ships as a lightweight
 Docker container.

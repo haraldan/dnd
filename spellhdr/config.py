@@ -35,9 +35,19 @@ class Config:
     # Whether the slots band is drawn on the first output page.
     include_slots_on_first: bool = True
 
-    # Content push adjustment (points): content is shifted down by
-    # (sum of included band heights) - push_overlap. May be negative.
-    push_overlap: float = 30.0
+    # Whether the modifiers band is drawn on non-first pages. When off, pages 2+
+    # keep their original content with no header and no downward shift.
+    include_modifiers_on_rest: bool = True
+
+    # Whitespace (points) added above the modifiers band on non-first pages, so it
+    # isn't flush against the top edge. Not applied to the first page (the slots
+    # band already provides headroom there).
+    modifiers_top_gap: float = 24.0
+
+    # Total downward shift (points) applied to the original page content. This is
+    # the absolute distance content moves down to make room for the header(s);
+    # tune it so content clears the bands without leaving too big a gap.
+    push_offset: float = 120.0
 
     # Raster DPI for the banner images.
     render_dpi: int = 300
@@ -58,7 +68,7 @@ class Config:
         """Coerce/clamp fields to sane types and ranges."""
         self.header_page_index = max(0, int(self.header_page_index))
         for name in ("slots_y0", "slots_y1", "modifiers_y0", "modifiers_y1",
-                     "push_overlap"):
+                     "push_offset", "modifiers_top_gap"):
             setattr(self, name, float(getattr(self, name)))
         # Keep each band ordered (y0 <= y1).
         if self.slots_y1 < self.slots_y0:
@@ -66,6 +76,7 @@ class Config:
         if self.modifiers_y1 < self.modifiers_y0:
             self.modifiers_y0, self.modifiers_y1 = self.modifiers_y1, self.modifiers_y0
         self.include_slots_on_first = bool(self.include_slots_on_first)
+        self.include_modifiers_on_rest = bool(self.include_modifiers_on_rest)
         self.render_dpi = max(72, min(1200, int(self.render_dpi)))
 
 
