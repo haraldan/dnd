@@ -22,15 +22,15 @@ class Config:
     """All user-tunable settings. Every field is persisted and editable in the UI."""
 
     # 0-based page of the header file the banners are clipped from.
-    header_page_index: int = 0
+    header_page_index: int = 2
 
     # Spell-slots band vertical range (PDF points, from top of the page).
-    slots_y0: float = 555.0
-    slots_y1: float = 655.0
+    slots_y0: float = 0.0
+    slots_y1: float = 115.0
 
     # Modifiers band vertical range (PDF points, from top of the page).
-    modifiers_y0: float = 130.0
-    modifiers_y1: float = 185.0
+    modifiers_y0: float = 116.0
+    modifiers_y1: float = 162.0
 
     # Whether the slots band is drawn on the first output page.
     include_slots_on_first: bool = True
@@ -42,13 +42,13 @@ class Config:
     # Whitespace (points) above the modifiers band on non-first pages (the "top
     # margin"), so it isn't flush against the top edge. The first page uses the
     # slots band for headroom instead.
-    top_margin: float = 24.0
+    top_margin: float = 20.0
 
     # Downward shift (points) of the content, measured from the TOP of the
     # modifiers band. Because the slots band (page 1) and the top margin
     # (pages 2+) sit above the modifiers band, the effective shift adapts per
     # page. Tune so content clears the modifiers band with the gap you want.
-    push_offset: float = 90.0
+    push_offset: float = 25.0
 
     # Raster DPI for the banner images.
     render_dpi: int = 300

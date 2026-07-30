@@ -211,6 +211,17 @@ el("preview-btn").addEventListener("click", async () => {
   el("preview-frame").src = URL.createObjectURL(blob);
 });
 
+// Reset every setting to the factory defaults, persist, and refresh the view.
+el("restore-defaults").addEventListener("click", async () => {
+  const defaults = await (await fetch("/config/defaults")).json();
+  state.config = defaults;
+  applyConfigToInputs();
+  el("header-page").value = (defaults.header_page_index || 0) + 1;
+  await saveConfig();
+  positionRects();
+  if (state.headerReady) await refreshHeaderImage();
+});
+
 el("download-btn").addEventListener("click", async () => {
   const blob = await render("/download", "attachment");
   if (!blob) return;
