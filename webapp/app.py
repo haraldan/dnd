@@ -57,12 +57,6 @@ def get_config():
     return jsonify(cfgmod.load_config().to_dict())
 
 
-@app.get("/config/defaults")
-def get_config_defaults():
-    """Factory-default settings, used by the UI's 'restore defaults' controls."""
-    return jsonify(cfgmod.Config().to_dict())
-
-
 @app.put("/config")
 def put_config():
     data = request.get_json(silent=True) or {}

@@ -211,13 +211,6 @@ el("preview-btn").addEventListener("click", async () => {
   el("preview-frame").src = URL.createObjectURL(blob);
 });
 
-// Restore just the offset-related fields (top margin + push offset) to defaults.
-el("restore-offsets").addEventListener("click", async () => {
-  const defaults = await (await fetch("/config/defaults")).json();
-  ["top_margin", "push_offset"].forEach((f) => { el(f).value = defaults[f]; });
-  scheduleSave();
-});
-
 el("download-btn").addEventListener("click", async () => {
   const blob = await render("/download", "attachment");
   if (!blob) return;

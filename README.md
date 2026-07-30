@@ -13,7 +13,7 @@ and download the merged PDF.
 - On pages 2+, a tunable **top margin** adds whitespace above the modifiers band.
 - Content is pushed down by the **push offset** (points) below the top of the
   modifiers band, so page 1 (slots band above) and pages 2+ (top margin above)
-  shift accordingly. A "restore default offsets" button resets these two values.
+  shift accordingly.
 
 Built with Flask + [PyMuPDF](https://pymupdf.readthedocs.io/). Ships as a lightweight
 Docker container.
