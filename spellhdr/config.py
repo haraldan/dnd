@@ -39,15 +39,16 @@ class Config:
     # keep their original content with no header and no downward shift.
     include_modifiers_on_rest: bool = True
 
-    # Whitespace (points) added above the modifiers band on non-first pages, so it
-    # isn't flush against the top edge. Not applied to the first page (the slots
-    # band already provides headroom there).
-    modifiers_top_gap: float = 24.0
+    # Whitespace (points) above the modifiers band on non-first pages (the "top
+    # margin"), so it isn't flush against the top edge. The first page uses the
+    # slots band for headroom instead.
+    top_margin: float = 24.0
 
-    # Total downward shift (points) applied to the original page content. This is
-    # the absolute distance content moves down to make room for the header(s);
-    # tune it so content clears the bands without leaving too big a gap.
-    push_offset: float = 120.0
+    # Downward shift (points) of the content, measured from the TOP of the
+    # modifiers band. Because the slots band (page 1) and the top margin
+    # (pages 2+) sit above the modifiers band, the effective shift adapts per
+    # page. Tune so content clears the modifiers band with the gap you want.
+    push_offset: float = 90.0
 
     # Raster DPI for the banner images.
     render_dpi: int = 300
@@ -68,7 +69,7 @@ class Config:
         """Coerce/clamp fields to sane types and ranges."""
         self.header_page_index = max(0, int(self.header_page_index))
         for name in ("slots_y0", "slots_y1", "modifiers_y0", "modifiers_y1",
-                     "push_offset", "modifiers_top_gap"):
+                     "push_offset", "top_margin"):
             setattr(self, name, float(getattr(self, name)))
         # Keep each band ordered (y0 <= y1).
         if self.slots_y1 < self.slots_y0:

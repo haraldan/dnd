@@ -70,9 +70,11 @@ def build_output(header_bytes: bytes, spells_bytes: bytes, cfg: Config) -> bytes
     - The slots band is placed only on the first page, and only when
       ``cfg.include_slots_on_first`` is set. When present it sits above the
       modifiers band (slots on top).
-    - On non-first pages, ``cfg.modifiers_top_gap`` points of whitespace are added
-      above the modifiers band so it isn't flush against the top edge.
-    - Original page content is pushed straight down by ``cfg.push_offset`` points.
+    - On non-first pages, ``cfg.top_margin`` points of whitespace are added above
+      the modifiers band so it isn't flush against the top edge.
+    - Content is pushed down by ``cfg.push_offset`` points below the top of the
+      modifiers band, so the slots band (page 1) and the top margin (pages 2+)
+      above it are accounted for automatically.
 
     Returns the merged PDF as bytes. Output page size matches each spells page.
     """
@@ -96,29 +98,31 @@ def build_output(header_bytes: bytes, spells_bytes: bytes, cfg: Config) -> bytes
             page_height = src.rect.height
             new_page = output_doc.new_page(width=page_width, height=page_height)  # type: ignore[attr-defined]
 
-            # Which bands go on this page, top-to-bottom, and any top whitespace.
-            bands: list[tuple[pymupdf.Pixmap | None, float]] = []
-            top_gap = 0.0
+            # Lay out header bands from the top, tracking where the modifiers band
+            # starts so the content shift can account for the slots band (page 1)
+            # or the top margin (pages 2+) sitting above it.
+            bands: list[tuple[pymupdf.Pixmap, float, float]] = []  # (pix, y_top, h)
+            mods_top: float | None = None
             if i == 0:
+                y = 0.0
                 if cfg.include_slots_on_first and slots_pix is not None:
-                    bands.append((slots_pix, slots_h))
+                    bands.append((slots_pix, y, slots_h))
+                    y += slots_h
                 if mods_pix is not None:
-                    bands.append((mods_pix, mods_h))
+                    mods_top = y
+                    bands.append((mods_pix, y, mods_h))
             elif cfg.include_modifiers_on_rest and mods_pix is not None:
-                # Non-first pages: modifiers band only, with whitespace above it.
-                top_gap = cfg.modifiers_top_gap
-                bands.append((mods_pix, mods_h))
+                mods_top = cfg.top_margin
+                bands.append((mods_pix, cfg.top_margin, mods_h))
 
-            # Draw bands stacked from the top (after the top gap).
-            y = top_gap
-            for pix, h in bands:
-                rect = pymupdf.Rect(0, y, page_width, y + h)
+            for pix, y_top, h in bands:
+                rect = pymupdf.Rect(0, y_top, page_width, y_top + h)
                 new_page.insert_image(rect, pixmap=pix)
-                y += h
 
-            # Push the original content straight down by the configured offset.
-            # Pages with no header (e.g. modifiers off on pages 2+) are unshifted.
-            shift = cfg.push_offset if bands else 0.0
+            # Content is pushed down by push_offset measured from the top of the
+            # modifiers band, so page 1 (slots band above) and pages 2+ (top margin
+            # above) shift accordingly. Pages with no header are left unshifted.
+            shift = (mods_top + cfg.push_offset) if mods_top is not None else 0.0
             content_rect = pymupdf.Rect(0, shift, page_width, shift + page_height)
             new_page.show_pdf_page(content_rect, spells_doc, i)
 

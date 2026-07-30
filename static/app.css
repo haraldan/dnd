@@ -94,6 +94,14 @@ button {
 }
 button.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
 button:disabled { opacity: .5; cursor: not-allowed; }
+button.link-btn {
+  border: none;
+  background: none;
+  padding: .2rem 0;
+  color: var(--accent);
+  text-decoration: underline;
+  font-size: .82rem;
+}
 
 .error { color: var(--error); font-size: .82rem; }
 

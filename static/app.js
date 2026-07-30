@@ -3,7 +3,7 @@
 // Config field ids that map 1:1 to the persisted Config dataclass.
 const NUM_FIELDS = [
   "slots_y0", "slots_y1", "modifiers_y0", "modifiers_y1",
-  "modifiers_top_gap", "push_offset", "render_dpi",
+  "top_margin", "push_offset", "render_dpi",
 ];
 const BOOL_FIELDS = ["include_slots_on_first", "include_modifiers_on_rest"];
 const BAND_FIELDS = {
@@ -209,6 +209,13 @@ el("preview-btn").addEventListener("click", async () => {
   if (!blob) return;
   el("preview-empty").style.display = "none";
   el("preview-frame").src = URL.createObjectURL(blob);
+});
+
+// Restore just the offset-related fields (top margin + push offset) to defaults.
+el("restore-offsets").addEventListener("click", async () => {
+  const defaults = await (await fetch("/config/defaults")).json();
+  ["top_margin", "push_offset"].forEach((f) => { el(f).value = defaults[f]; });
+  scheduleSave();
 });
 
 el("download-btn").addEventListener("click", async () => {

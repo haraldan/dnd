@@ -10,8 +10,10 @@ and download the merged PDF.
   that toggle is on.
 - The **spell-slots** band is placed only on the **first** page (toggleable), sitting
   above the modifiers band.
-- On pages 2+, a tunable **top gap** adds whitespace above the modifiers band.
-- Original spell content is pushed straight down by the **push offset** (points).
+- On pages 2+, a tunable **top margin** adds whitespace above the modifiers band.
+- Content is pushed down by the **push offset** (points) below the top of the
+  modifiers band, so page 1 (slots band above) and pages 2+ (top margin above)
+  shift accordingly. A "restore default offsets" button resets these two values.
 
 Built with Flask + [PyMuPDF](https://pymupdf.readthedocs.io/). Ships as a lightweight
 Docker container.

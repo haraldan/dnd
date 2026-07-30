@@ -58,6 +58,31 @@ def test_slots_only_on_first_page(sample_bytes):
         doc.close()
 
 
+def test_shift_accounts_for_slots_and_top_margin(sample_bytes):
+    """The modifiers band starts below the slots band on page 1, and below the
+    top margin on pages 2+, so the content shift adapts per page."""
+    cfg = Config(
+        include_slots_on_first=True,
+        slots_y0=550, slots_y1=650,          # slots band height = 100
+        modifiers_y0=130, modifiers_y1=185,  # modifiers band height = 55
+        top_margin=30,
+    )
+    out = build_output(sample_bytes, sample_bytes, cfg)
+    doc = pymupdf.open(stream=out, filetype="pdf")
+    try:
+        def image_tops(pno):
+            d = doc.load_page(pno).get_text("dict")
+            return sorted(round(b["bbox"][1], 1) for b in d["blocks"] if b["type"] == 1)
+
+        p0 = image_tops(0)  # [slots_top, modifiers_top]
+        p1 = image_tops(1)  # [modifiers_top]
+        assert p0[0] == 0.0            # slots band flush to top on page 1
+        assert abs(p0[1] - 100.0) < 1  # modifiers band below the 100pt slots band
+        assert abs(p1[0] - 30.0) < 1   # modifiers band below the 30pt top margin
+    finally:
+        doc.close()
+
+
 def test_slots_toggle_off(sample_bytes):
     cfg = Config(header_page_index=0, include_slots_on_first=False)
     out = build_output(sample_bytes, sample_bytes, cfg)
